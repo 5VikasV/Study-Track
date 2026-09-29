@@ -1,0 +1,29 @@
+services:
+  db:
+    image: postgres:16-alpine
+    environment:
+      POSTGRES_DB: ${POSTGRES_DB:-studytrack}
+      POSTGRES_USER: ${POSTGRES_USER:-studytrack}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-studytrack}
+    volumes: [postgres_data:/var/lib/postgresql/data]
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U studytrack -d studytrack"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+  api:
+    build: ./backend
+    environment:
+      DATABASE_URL: postgresql+psycopg://${POSTGRES_USER:-studytrack}:${POSTGRES_PASSWORD:-studytrack}@db:5432/${POSTGRES_DB:-studytrack}
+      CORS_ORIGINS: ${CORS_ORIGINS:-http://localhost:5173}
+      SEED_DEMO_DATA: ${SEED_DEMO_DATA:-true}
+    ports: ["8000:8000"]
+    depends_on: { db: { condition: service_healthy } }
+  web:
+    image: node:22-alpine
+    working_dir: /app
+    volumes: [./frontend:/app]
+    command: sh -c "npm install && npm run dev -- --host 0.0.0.0"
+    ports: ["5173:5173"]
+    depends_on: [api]
+volumes: { postgres_data: {} }

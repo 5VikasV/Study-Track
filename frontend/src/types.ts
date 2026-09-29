@@ -1,0 +1,10 @@
+export type Subject = { id:number; name:string; color:string; active:boolean };
+export type StudySession = { id:number; subject_id:number; started_at:string; duration_minutes:number; mood:number; productivity:number; notes?:string|null };
+export type Dashboard = { sample_count:number; average_productivity:number|null; average_minutes:number|null; weekly_minutes:number; subject_stats:{subject:string;sessions:number;average_productivity:number;minutes:number}[]; insights:{tone:string;title:string;body:string}[]; timeline:{date:string;productivity:number;minutes:number;subject:string}[]; upcoming_exams?:{exam_id:number;name:string;days_left:number;remaining_modules:number;status:string}[]; today_target?:number };
+export type Advisor = { subject:string;duration_minutes:number;break_rhythm:string;rationale:string;model_ready:boolean;prediction?:{score:number;confidence:number;sample_count:number} };
+export type Cognitive = {recent_average:number;baseline_average:number;stability:number;burnout_risk:string;focus_efficiency:number};
+export type Insights = Dashboard & {cognitive:Cognitive|null;progress:{subject:string;first_half:number;recent_half:number}[]};
+export type Replay = {events:{id:number;date:string;subject:string;minutes:number;productivity:number;mood:number;switched_subject:boolean}[];highlights:{title:string;body:string}[]};
+export type Exam = {id:number;name:string;subject_id:number;exam_date:string;total_modules:number;daily_minutes:number};
+export type PlanTask = {id:number;exam_id:number;subject_id:number;title:string;scheduled_for:string;phase:string;position:number;completed:boolean};
+export type Planner = {exams:{exam_id:number;name:string;subject:string;exam_date:string;days_left:number;total_modules:number;completed_modules:number;remaining_modules:number;daily_target:number;capacity:number;status:string}[];tasks:PlanTask[];priorities:{exam_id:number;name:string;subject:string;priority_score:number;reason:string}[];today:number[]};
